@@ -1,0 +1,1 @@
+import{i as o}from"./auth.orSIlS3t.js";function d(){if(o()){const e=document.getElementById("admin-header-controls");e&&e.classList.remove("hidden"),document.querySelectorAll(".admin-edit-btn").forEach(n=>n.classList.remove("hidden"));const t=document.getElementById("admin-create-btn");t&&t.classList.remove("hidden")}}d();
