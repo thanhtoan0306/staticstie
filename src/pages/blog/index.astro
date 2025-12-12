@@ -2,6 +2,9 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import { getAllPosts } from '../../lib/blog';
+
+const posts = await getAllPosts();
 ---
 
 <BaseLayout 
@@ -13,67 +16,69 @@ import Footer from '../../components/Footer.astro';
 		<div class="container mx-auto px-4">
 			<div class="flex justify-between items-center mb-8">
 				<h1 class="text-4xl font-bold text-gray-800">Blog</h1>
-				<a href="/blog/tao-moi" class="bg-amber-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-amber-700 transition">
-					+ Tạo bài viết mới
-				</a>
-			</div>
-			<div id="blog-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-				<div class="col-span-full text-center py-12">
-					<p class="text-gray-600">Đang tải...</p>
+				<div id="admin-header-controls" class="hidden">
+					<a href="/blog/tao-moi" class="bg-amber-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-amber-700 transition">
+						+ Tạo bài viết mới
+					</a>
 				</div>
+			</div>
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+				{posts.map((post) => (
+					<article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+						<div class="h-48 bg-amber-100"></div>
+						<div class="p-6">
+							<h2 class="text-xl font-semibold mb-2">
+								<a href={`/blog/${post.slug}`} class="hover:text-amber-600 transition">
+									{post.title}
+								</a>
+							</h2>
+							<p class="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
+							<div class="flex justify-between items-center text-sm text-gray-500">
+								<span>{post.publishedAt.toLocaleDateString('vi-VN')}</span>
+								<span>Tác giả: {post.author}</span>
+							</div>
+							<div class="mt-4 flex gap-2">
+								<a href={`/blog/${post.slug}`} class="text-amber-600 hover:underline">
+									Đọc thêm →
+								</a>
+								<a href={`/blog/sua/${post.id}`} class="admin-edit-btn text-blue-600 hover:underline ml-auto hidden">
+									Sửa
+								</a>
+							</div>
+						</div>
+					</article>
+				))}
+				{posts.length === 0 && (
+					<div class="col-span-full text-center py-12">
+						<p class="text-gray-600 text-lg">Chưa có bài viết nào. Hãy tạo bài viết đầu tiên!</p>
+						<a href="/blog/tao-moi" id="admin-create-btn" class="hidden inline-block mt-4 bg-amber-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-amber-700 transition">
+							Tạo bài viết mới
+						</a>
+					</div>
+				)}
 			</div>
 		</div>
 	</main>
 	<Footer />
 	<script>
-		import { getAllPosts } from '../../lib/blog-client';
+		import { isAuthenticated } from '../../lib/auth';
 		
-		function renderPosts() {
-			const container = document.getElementById('blog-list');
-			if (!container) return;
-			
-			const posts = getAllPosts();
-			
-			if (posts.length === 0) {
-				container.innerHTML = `
-					<div class="col-span-full text-center py-12">
-						<p class="text-gray-600 text-lg">Chưa có bài viết nào. Hãy tạo bài viết đầu tiên!</p>
-						<a href="/blog/tao-moi" class="inline-block mt-4 bg-amber-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-amber-700 transition">
-							Tạo bài viết mới
-						</a>
-					</div>
-				`;
-				return;
+		function showAdminControls() {
+			if (isAuthenticated()) {
+				// Show header button
+				const headerControls = document.getElementById('admin-header-controls');
+				if (headerControls) headerControls.classList.remove('hidden');
+				
+				// Show edit buttons
+				const editButtons = document.querySelectorAll('.admin-edit-btn');
+				editButtons.forEach(btn => btn.classList.remove('hidden'));
+				
+				// Show create button in empty state
+				const createBtn = document.getElementById('admin-create-btn');
+				if (createBtn) createBtn.classList.remove('hidden');
 			}
-			
-			container.innerHTML = posts.map(post => `
-				<article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
-					<div class="h-48 bg-amber-100"></div>
-					<div class="p-6">
-						<h2 class="text-xl font-semibold mb-2">
-							<a href="/blog/${post.slug}" class="hover:text-amber-600 transition">
-								${post.title}
-							</a>
-						</h2>
-						<p class="text-gray-600 mb-4 line-clamp-3">${post.excerpt}</p>
-						<div class="flex justify-between items-center text-sm text-gray-500">
-							<span>${new Date(post.publishedAt).toLocaleDateString('vi-VN')}</span>
-							<span>Tác giả: ${post.author}</span>
-						</div>
-						<div class="mt-4 flex gap-2">
-							<a href="/blog/${post.slug}" class="text-amber-600 hover:underline">
-								Đọc thêm →
-							</a>
-							<a href="/blog/sua/${post.id}" class="text-blue-600 hover:underline ml-auto">
-								Sửa
-							</a>
-						</div>
-					</div>
-				</article>
-			`).join('');
 		}
 		
-		renderPosts();
+		showAdminControls();
 	</script>
 </BaseLayout>
-

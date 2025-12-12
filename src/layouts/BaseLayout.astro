@@ -54,7 +54,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteURL);
 		<!-- Canonical URL -->
 		<link rel="canonical" href={canonicalURL} />
 		
-		<!-- Structured Data -->
+		<!-- Structured Data - Organization -->
 		<script type="application/ld+json" set:html={JSON.stringify({
 			"@context": "https://schema.org",
 			"@type": "Organization",
@@ -62,6 +62,18 @@ const canonicalURL = new URL(Astro.url.pathname, siteURL);
 			"url": siteURL,
 			"logo": new URL("/logo.png", siteURL),
 			"description": description,
+			"contactPoint": {
+				"@type": "ContactPoint",
+				"telephone": "+84-1900-1234",
+				"contactType": "customer service",
+				"areaServed": "VN",
+				"availableLanguage": "Vietnamese"
+			},
+			"address": {
+				"@type": "PostalAddress",
+				"addressLocality": "Hà Nội",
+				"addressCountry": "VN"
+			},
 			"sameAs": []
 		})} />
 	</head>

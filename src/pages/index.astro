@@ -2,6 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { getAllProducts } from '../lib/products';
+
+const products = getAllProducts().slice(0, 3);
+const siteURL = 'https://yensaopremium.com';
 ---
 
 <BaseLayout 
@@ -54,43 +58,68 @@ import Footer from '../components/Footer.astro';
 		<!-- Products Preview -->
 		<section class="py-16 bg-gray-50">
 			<div class="container mx-auto px-4">
-				<h2 class="text-3xl font-bold text-center mb-12 text-gray-800">
+				<h2 class="text-3xl font-bold text-center mb-4 text-gray-800">
 					Sản phẩm nổi bật
 				</h2>
+				<p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+					Khám phá các sản phẩm yến sào cao cấp, nguyên chất 100% được chọn lọc kỹ lưỡng
+				</p>
 				<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-					<div class="bg-white rounded-lg shadow-md overflow-hidden">
-						<div class="h-48 bg-amber-100"></div>
-						<div class="p-6">
-							<h3 class="text-xl font-semibold mb-2">Yến Sào Tinh Chế</h3>
-							<p class="text-gray-600 mb-4">Yến sào đã được làm sạch, sẵn sàng sử dụng</p>
-							<p class="text-2xl font-bold text-amber-600 mb-4">2.500.000đ</p>
-							<a href="/san-pham" class="block text-center bg-amber-600 text-white py-2 rounded hover:bg-amber-700 transition">
-								Xem chi tiết
+					{products.map((product) => (
+						<article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+							<a href={`/san-pham/${product.slug}`}>
+								<div class="h-48 bg-amber-100 flex items-center justify-center">
+									<img 
+										src={product.image} 
+										alt={product.imageAlt}
+										class="w-full h-full object-cover"
+										loading="lazy"
+										onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+									/>
+									<div class="hidden w-full h-full bg-amber-100 items-center justify-center text-amber-600 text-4xl">
+										📦
+									</div>
+								</div>
 							</a>
-						</div>
-					</div>
-					<div class="bg-white rounded-lg shadow-md overflow-hidden">
-						<div class="h-48 bg-amber-100"></div>
-						<div class="p-6">
-							<h3 class="text-xl font-semibold mb-2">Yến Sào Thô</h3>
-							<p class="text-gray-600 mb-4">Yến sào nguyên tổ, chưa qua xử lý</p>
-							<p class="text-2xl font-bold text-amber-600 mb-4">1.800.000đ</p>
-							<a href="/san-pham" class="block text-center bg-amber-600 text-white py-2 rounded hover:bg-amber-700 transition">
-								Xem chi tiết
-							</a>
-						</div>
-					</div>
-					<div class="bg-white rounded-lg shadow-md overflow-hidden">
-						<div class="h-48 bg-amber-100"></div>
-						<div class="p-6">
-							<h3 class="text-xl font-semibold mb-2">Yến Sào Chưng Sẵn</h3>
-							<p class="text-gray-600 mb-4">Yến sào đã chưng sẵn, tiện lợi sử dụng</p>
-							<p class="text-2xl font-bold text-amber-600 mb-4">3.200.000đ</p>
-							<a href="/san-pham" class="block text-center bg-amber-600 text-white py-2 rounded hover:bg-amber-700 transition">
-								Xem chi tiết
-							</a>
-						</div>
-					</div>
+							<div class="p-6">
+								<h3 class="text-xl font-semibold mb-2">
+									<a href={`/san-pham/${product.slug}`} class="hover:text-amber-600 transition">
+										{product.name}
+									</a>
+								</h3>
+								<p class="text-gray-600 mb-4 line-clamp-2">{product.description}</p>
+								<p class="text-2xl font-bold text-amber-600 mb-4">
+									{new Intl.NumberFormat('vi-VN').format(product.price)}đ
+									<span class="text-sm text-gray-500 font-normal"> / {product.priceUnit}</span>
+								</p>
+								<a href={`/san-pham/${product.slug}`} class="block text-center bg-amber-600 text-white py-2 rounded hover:bg-amber-700 transition">
+									Xem chi tiết
+								</a>
+							</div>
+						</article>
+					))}
+				</div>
+				<div class="text-center mt-8">
+					<a href="/san-pham" class="inline-block text-amber-600 hover:text-amber-700 font-semibold">
+						Xem tất cả sản phẩm →
+					</a>
+				</div>
+			</div>
+		</section>
+		
+		<!-- Blog Preview -->
+		<section class="py-16">
+			<div class="container mx-auto px-4">
+				<h2 class="text-3xl font-bold text-center mb-4 text-gray-800">
+					Bài viết mới nhất
+				</h2>
+				<p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+					Khám phá các bài viết về công dụng, cách sử dụng và nhiều thông tin hữu ích về yến sào
+				</p>
+				<div class="text-center">
+					<a href="/blog" class="inline-block bg-amber-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-amber-700 transition">
+						Xem tất cả bài viết
+					</a>
 				</div>
 			</div>
 		</section>

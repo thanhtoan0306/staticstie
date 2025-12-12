@@ -12,6 +12,13 @@ import Footer from '../../components/Footer.astro';
 	<main class="min-h-screen py-8">
 		<div class="container mx-auto px-4 max-w-4xl">
 			<h1 class="text-4xl font-bold mb-8 text-gray-800">Tạo bài viết mới</h1>
+			<div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+				<p class="text-blue-800 text-sm">
+					<strong>Lưu ý:</strong> Sau khi điền form và nhấn "Tạo file Markdown", file sẽ được tải về. 
+					Bạn cần đặt file vào thư mục <code class="bg-blue-100 px-1 rounded">src/content/blog/</code> 
+					và chạy lại build để bài viết xuất hiện trên website.
+				</p>
+			</div>
 			<form id="blog-form" class="bg-white rounded-lg shadow-md p-8">
 				<div class="mb-6">
 					<label class="block text-gray-700 font-semibold mb-2">Tiêu đề *</label>
@@ -33,7 +40,7 @@ import Footer from '../../components/Footer.astro';
 						pattern="[a-z0-9-]+"
 						class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
 					/>
-					<p class="text-sm text-gray-500 mt-1">Chỉ sử dụng chữ thường, số và dấu gạch ngang</p>
+					<p class="text-sm text-gray-500 mt-1">Chỉ sử dụng chữ thường, số và dấu gạch ngang (ví dụ: bai-viet-moi)</p>
 				</div>
 				<div class="mb-6">
 					<label class="block text-gray-700 font-semibold mb-2">Tóm tắt *</label>
@@ -46,14 +53,16 @@ import Footer from '../../components/Footer.astro';
 					></textarea>
 				</div>
 				<div class="mb-6">
-					<label class="block text-gray-700 font-semibold mb-2">Nội dung *</label>
+					<label class="block text-gray-700 font-semibold mb-2">Nội dung (Markdown) *</label>
 					<textarea 
 						id="content"
 						name="content"
-						rows="10"
+						rows="15"
 						required
-						class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+						placeholder="Viết nội dung bằng Markdown..."
+						class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600 font-mono text-sm"
 					></textarea>
+					<p class="text-sm text-gray-500 mt-1">Hỗ trợ Markdown: **bold**, *italic*, # heading, - list, etc.</p>
 				</div>
 				<div class="mb-6">
 					<label class="block text-gray-700 font-semibold mb-2">Tác giả *</label>
@@ -71,6 +80,7 @@ import Footer from '../../components/Footer.astro';
 						type="text" 
 						id="tags"
 						name="tags"
+						placeholder="ví dụ: sức khỏe, yến sào, dinh dưỡng"
 						class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
 					/>
 				</div>
@@ -79,7 +89,7 @@ import Footer from '../../components/Footer.astro';
 						type="submit"
 						class="bg-amber-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-amber-700 transition"
 					>
-						Tạo bài viết
+						Tạo file Markdown
 					</button>
 					<a 
 						href="/blog"
@@ -93,7 +103,12 @@ import Footer from '../../components/Footer.astro';
 	</main>
 	<Footer />
 	<script>
-		import { createPost } from '../../lib/blog-client';
+		import { isAuthenticated } from '../../lib/auth';
+		
+		// Check authentication
+		if (!isAuthenticated()) {
+			window.location.href = `/login?return=${encodeURIComponent(window.location.pathname)}`;
+		}
 		
 		const form = document.getElementById('blog-form');
 		const titleInput = document.getElementById('title');
@@ -116,18 +131,37 @@ import Footer from '../../components/Footer.astro';
 			e.preventDefault();
 			const formData = new FormData(form);
 			const tags = formData.get('tags')?.toString().split(',').map(t => t.trim()).filter(t => t) || [];
+			const title = formData.get('title')?.toString() || '';
+			const slug = formData.get('slug')?.toString() || '';
+			const excerpt = formData.get('excerpt')?.toString() || '';
+			const content = formData.get('content')?.toString() || '';
+			const author = formData.get('author')?.toString() || '';
+			const publishedAt = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
 			
-			const post = createPost({
-				title: formData.get('title')?.toString() || '',
-				slug: formData.get('slug')?.toString() || '',
-				excerpt: formData.get('excerpt')?.toString() || '',
-				content: formData.get('content')?.toString() || '',
-				author: formData.get('author')?.toString() || '',
-				tags: tags,
-			});
+			// Generate markdown content
+			const frontmatter = `---
+title: "${title.replace(/"/g, '\\"')}"
+excerpt: "${excerpt.replace(/"/g, '\\"')}"
+author: "${author.replace(/"/g, '\\"')}"
+publishedAt: ${publishedAt}
+${tags.length > 0 ? `tags:\n${tags.map(t => `  - ${t}`).join('\n')}` : ''}
+---
 
-			window.location.href = `/blog/${post.slug}`;
+${content}`;
+
+			// Create blob and download
+			const blob = new Blob([frontmatter], { type: 'text/markdown' });
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = `${slug}.md`;
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+			URL.revokeObjectURL(url);
+
+			// Show success message
+			alert(`File ${slug}.md đã được tải về!\n\nBước tiếp theo:\n1. Đặt file vào thư mục src/content/blog/\n2. Chạy npm run build\n3. Bài viết sẽ xuất hiện trên website`);
 		});
 	</script>
 </BaseLayout>
-

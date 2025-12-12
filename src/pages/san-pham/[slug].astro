@@ -1,0 +1,280 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getProductBySlug, getAllProducts } from '../../lib/products';
+
+export async function getStaticPaths() {
+	const products = getAllProducts();
+	return products.map((product) => ({
+		params: { slug: product.slug },
+	}));
+}
+
+const { slug } = Astro.params;
+const product = slug ? getProductBySlug(slug) : null;
+
+if (!product) {
+	return Astro.redirect('/san-pham');
+}
+
+const siteURL = 'https://yensaopremium.com';
+const productURL = `${siteURL}/san-pham/${product.slug}`;
+---
+
+<BaseLayout 
+	title={`${product.name} - Yến Sào Premium`}
+	description={product.description}
+	image={product.image}
+	keywords={`${product.name}, yến sào, ${product.category}, mua yến sào`}
+>
+	<Header />
+	<main class="min-h-screen py-8">
+		<div class="container mx-auto px-4 max-w-6xl">
+			<nav aria-label="Breadcrumb" class="mb-6">
+				<ol class="flex items-center space-x-2 text-sm text-gray-600">
+					<li><a href="/" class="hover:text-amber-600">Trang chủ</a></li>
+					<li>/</li>
+					<li><a href="/san-pham" class="hover:text-amber-600">Sản phẩm</a></li>
+					<li>/</li>
+					<li class="text-gray-800 font-semibold">{product.name}</li>
+				</ol>
+			</nav>
+			
+			<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+				<div class="bg-white rounded-lg shadow-md overflow-hidden">
+					<div class="h-96 bg-amber-100 flex items-center justify-center">
+						<img 
+							src={product.image} 
+							alt={product.imageAlt}
+							class="w-full h-full object-cover"
+							loading="eager"
+							onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+						/>
+						<div class="hidden w-full h-full bg-amber-100 items-center justify-center text-amber-600 text-6xl">
+							📦
+						</div>
+					</div>
+				</div>
+				
+				<div>
+					<h1 class="text-4xl font-bold mb-4 text-gray-800">{product.name}</h1>
+					
+					<div class="flex items-center gap-4 mb-6">
+						{product.rating && (
+							<div class="flex items-center gap-2">
+								<span class="text-yellow-500 text-xl">⭐</span>
+								<span class="text-lg font-semibold">{product.rating.value}</span>
+								<span class="text-gray-500">({product.rating.count} đánh giá)</span>
+							</div>
+						)}
+						<span class={`px-3 py-1 rounded-full text-sm font-semibold ${product.inStock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+							{product.inStock ? 'Còn hàng' : 'Hết hàng'}
+						</span>
+					</div>
+					
+					<div class="mb-6">
+						<p class="text-4xl font-bold text-amber-600 mb-2">
+							{new Intl.NumberFormat('vi-VN').format(product.price)}đ
+							<span class="text-lg text-gray-500 font-normal"> / {product.priceUnit}</span>
+						</p>
+					</div>
+					
+					<div class="mb-6">
+						<h2 class="text-xl font-semibold mb-3">Mô tả sản phẩm</h2>
+						<p class="text-gray-700 leading-relaxed">{product.longDescription}</p>
+					</div>
+					
+					<div class="mb-6">
+						<h2 class="text-xl font-semibold mb-3">Thông tin sản phẩm</h2>
+						<ul class="space-y-2 text-gray-700">
+							<li><strong>Danh mục:</strong> {product.category}</li>
+							<li><strong>Trọng lượng:</strong> {product.priceUnit}</li>
+							<li><strong>Tình trạng:</strong> {product.inStock ? 'Còn hàng' : 'Hết hàng'}</li>
+						</ul>
+					</div>
+					
+					<a 
+						href="#dat-hang"
+						class="block w-full bg-amber-600 text-white py-4 rounded-lg font-semibold hover:bg-amber-700 transition text-center text-lg mb-4"
+					>
+						Đặt hàng ngay
+					</a>
+					<a 
+						href="/lien-he"
+						class="block w-full bg-gray-200 text-gray-700 py-4 rounded-lg font-semibold hover:bg-gray-300 transition text-center"
+					>
+						Liên hệ tư vấn
+					</a>
+				</div>
+			</div>
+			
+			<!-- Form đặt hàng -->
+			<section id="dat-hang" class="bg-white rounded-lg shadow-md p-8 mb-12">
+				<h2 class="text-3xl font-bold mb-6 text-gray-800">Đặt hàng {product.name}</h2>
+				<form id="order-form" class="space-y-6">
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+						<div>
+							<label class="block text-gray-700 font-semibold mb-2">Họ và tên *</label>
+							<input 
+								type="text" 
+								name="name"
+								required
+								class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+							/>
+						</div>
+						<div>
+							<label class="block text-gray-700 font-semibold mb-2">Số điện thoại *</label>
+							<input 
+								type="tel" 
+								name="phone"
+								required
+								pattern="[0-9]{10,11}"
+								class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+							/>
+						</div>
+					</div>
+					<div>
+						<label class="block text-gray-700 font-semibold mb-2">Email *</label>
+						<input 
+							type="email" 
+							name="email"
+							required
+							class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+						/>
+					</div>
+					<div>
+						<label class="block text-gray-700 font-semibold mb-2">Địa chỉ giao hàng *</label>
+						<textarea 
+							name="address"
+							rows="3"
+							required
+							class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+						></textarea>
+					</div>
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+						<div>
+							<label class="block text-gray-700 font-semibold mb-2">Số lượng *</label>
+							<input 
+								type="number" 
+								name="quantity"
+								min="1"
+								value="1"
+								required
+								class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+							/>
+						</div>
+						<div>
+							<label class="block text-gray-700 font-semibold mb-2">Ghi chú</label>
+							<input 
+								type="text" 
+								name="note"
+								class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+							/>
+						</div>
+					</div>
+					<input type="hidden" name="product" value={product.name} />
+					<input type="hidden" name="productId" value={product.id} />
+					<button 
+						type="submit"
+						class="w-full bg-amber-600 text-white py-4 rounded-lg font-semibold hover:bg-amber-700 transition text-lg"
+					>
+						Xác nhận đặt hàng
+					</button>
+				</form>
+			</section>
+			
+			<!-- Sản phẩm liên quan -->
+			<section class="mb-12">
+				<h2 class="text-3xl font-bold mb-6 text-gray-800">Sản phẩm liên quan</h2>
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+					{getAllProducts().filter(p => p.id !== product.id).slice(0, 3).map((relatedProduct) => (
+						<a href={`/san-pham/${relatedProduct.slug}`} class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+							<div class="h-48 bg-amber-100 flex items-center justify-center">
+								<img 
+									src={relatedProduct.image} 
+									alt={relatedProduct.imageAlt}
+									class="w-full h-full object-cover"
+									loading="lazy"
+								/>
+							</div>
+							<div class="p-4">
+								<h3 class="font-semibold mb-2 hover:text-amber-600">{relatedProduct.name}</h3>
+								<p class="text-amber-600 font-bold">{new Intl.NumberFormat('vi-VN').format(relatedProduct.price)}đ / {relatedProduct.priceUnit}</p>
+							</div>
+						</a>
+					))}
+				</div>
+			</section>
+		</div>
+	</main>
+	<Footer />
+	<script>
+		const form = document.getElementById('order-form');
+		form?.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const formData = new FormData(form);
+			const data = Object.fromEntries(formData);
+			
+			// In production, send to server/API
+			alert(`Cảm ơn bạn đã đặt hàng!\n\nSản phẩm: ${data.product}\nSố lượng: ${data.quantity}\n\nChúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.`);
+			form.reset();
+		});
+	</script>
+	<script type="application/ld+json" set:html={JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "Product",
+		"name": product.name,
+		"image": `${siteURL}${product.image}`,
+		"description": product.description,
+		"sku": product.id,
+		"brand": {
+			"@type": "Brand",
+			"name": "Yến Sào Premium"
+		},
+		"offers": {
+			"@type": "Offer",
+			"url": productURL,
+			"priceCurrency": "VND",
+			"price": product.price,
+			"priceValidUntil": new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+			"itemCondition": "https://schema.org/NewCondition",
+			"availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+			"seller": {
+				"@type": "Organization",
+				"name": "Yến Sào Premium"
+			}
+		},
+		"aggregateRating": product.rating ? {
+			"@type": "AggregateRating",
+			"ratingValue": product.rating.value,
+			"reviewCount": product.rating.count
+		} : undefined
+	})} />
+	<script type="application/ld+json" set:html={JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{
+				"@type": "ListItem",
+				"position": 1,
+				"name": "Trang chủ",
+				"item": siteURL
+			},
+			{
+				"@type": "ListItem",
+				"position": 2,
+				"name": "Sản phẩm",
+				"item": `${siteURL}/san-pham`
+			},
+			{
+				"@type": "ListItem",
+				"position": 3,
+				"name": product.name,
+				"item": productURL
+			}
+		]
+	})} />
+</BaseLayout>
+
+

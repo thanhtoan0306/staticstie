@@ -2,6 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { getAllProducts } from '../lib/products';
+
+const products = getAllProducts();
+const siteURL = 'https://yensaopremium.com';
 ---
 
 <BaseLayout 
@@ -11,46 +15,95 @@ import Footer from '../components/Footer.astro';
 	<Header />
 	<main class="min-h-screen py-8">
 		<div class="container mx-auto px-4">
-			<h1 class="text-4xl font-bold text-center mb-12 text-gray-800">
+			<nav aria-label="Breadcrumb" class="mb-6">
+				<ol class="flex items-center space-x-2 text-sm text-gray-600">
+					<li><a href="/" class="hover:text-amber-600">Trang chủ</a></li>
+					<li>/</li>
+					<li class="text-gray-800 font-semibold">Sản phẩm</li>
+				</ol>
+			</nav>
+			<h1 class="text-4xl font-bold text-center mb-4 text-gray-800">
 				Sản phẩm Yến Sào
 			</h1>
+			<p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+				Chúng tôi cung cấp các sản phẩm yến sào cao cấp, nguyên chất 100%, được chọn lọc kỹ lưỡng từ các nhà yến uy tín tại Việt Nam.
+			</p>
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-				<div class="bg-white rounded-lg shadow-md overflow-hidden">
-					<div class="h-64 bg-amber-100"></div>
-					<div class="p-6">
-						<h2 class="text-2xl font-semibold mb-2">Yến Sào Tinh Chế</h2>
-						<p class="text-gray-600 mb-4">Yến sào đã được làm sạch hoàn toàn, sẵn sàng sử dụng. Sản phẩm cao cấp, nguyên chất 100%.</p>
-						<p class="text-3xl font-bold text-amber-600 mb-4">2.500.000đ / 100g</p>
-						<button class="w-full bg-amber-600 text-white py-3 rounded-lg font-semibold hover:bg-amber-700 transition">
-							Liên hệ đặt hàng
-						</button>
-					</div>
-				</div>
-				<div class="bg-white rounded-lg shadow-md overflow-hidden">
-					<div class="h-64 bg-amber-100"></div>
-					<div class="p-6">
-						<h2 class="text-2xl font-semibold mb-2">Yến Sào Thô</h2>
-						<p class="text-gray-600 mb-4">Yến sào nguyên tổ, chưa qua xử lý. Dành cho những người muốn tự làm sạch.</p>
-						<p class="text-3xl font-bold text-amber-600 mb-4">1.800.000đ / 100g</p>
-						<button class="w-full bg-amber-600 text-white py-3 rounded-lg font-semibold hover:bg-amber-700 transition">
-							Liên hệ đặt hàng
-						</button>
-					</div>
-				</div>
-				<div class="bg-white rounded-lg shadow-md overflow-hidden">
-					<div class="h-64 bg-amber-100"></div>
-					<div class="p-6">
-						<h2 class="text-2xl font-semibold mb-2">Yến Sào Chưng Sẵn</h2>
-						<p class="text-gray-600 mb-4">Yến sào đã chưng sẵn với đường phèn, tiện lợi sử dụng ngay.</p>
-						<p class="text-3xl font-bold text-amber-600 mb-4">3.200.000đ / 100g</p>
-						<button class="w-full bg-amber-600 text-white py-3 rounded-lg font-semibold hover:bg-amber-700 transition">
-							Liên hệ đặt hàng
-						</button>
-					</div>
-				</div>
+				{products.map((product) => (
+					<article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+						<a href={`/san-pham/${product.slug}`}>
+							<div class="h-64 bg-amber-100 flex items-center justify-center">
+								<img 
+									src={product.image} 
+									alt={product.imageAlt}
+									class="w-full h-full object-cover"
+									loading="lazy"
+									onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+								/>
+								<div class="hidden w-full h-full bg-amber-100 items-center justify-center text-amber-600 text-4xl">
+									📦
+								</div>
+							</div>
+						</a>
+						<div class="p-6">
+							<h2 class="text-2xl font-semibold mb-2">
+								<a href={`/san-pham/${product.slug}`} class="hover:text-amber-600 transition">
+									{product.name}
+								</a>
+							</h2>
+							<p class="text-gray-600 mb-4 line-clamp-2">{product.description}</p>
+							<div class="flex items-center justify-between mb-4">
+								<p class="text-3xl font-bold text-amber-600">
+									{new Intl.NumberFormat('vi-VN').format(product.price)}đ
+									<span class="text-sm text-gray-500 font-normal"> / {product.priceUnit}</span>
+								</p>
+								{product.rating && (
+									<div class="flex items-center gap-1">
+										<span class="text-yellow-500">⭐</span>
+										<span class="text-sm text-gray-600">{product.rating.value}</span>
+										<span class="text-xs text-gray-500">({product.rating.count})</span>
+									</div>
+								)}
+							</div>
+							<a 
+								href={`/san-pham/${product.slug}`}
+								class="block w-full bg-amber-600 text-white py-3 rounded-lg font-semibold hover:bg-amber-700 transition text-center"
+							>
+								Xem chi tiết
+							</a>
+						</div>
+					</article>
+				))}
 			</div>
 		</div>
 	</main>
 	<Footer />
+	<script type="application/ld+json" set:html={JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "CollectionPage",
+		"name": "Sản phẩm Yến Sào",
+		"description": "Danh sách sản phẩm yến sào cao cấp, nguyên chất 100%",
+		"url": `${siteURL}/san-pham`,
+		"mainEntity": {
+			"@type": "ItemList",
+			"itemListElement": products.map((product, index) => ({
+				"@type": "ListItem",
+				"position": index + 1,
+				"item": {
+					"@type": "Product",
+					"name": product.name,
+					"url": `${siteURL}/san-pham/${product.slug}`,
+					"image": `${siteURL}${product.image}`,
+					"description": product.description,
+					"offers": {
+						"@type": "Offer",
+						"price": product.price,
+						"priceCurrency": "VND",
+						"availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+					}
+				}
+			}))
+		}
+	})} />
 </BaseLayout>
 
