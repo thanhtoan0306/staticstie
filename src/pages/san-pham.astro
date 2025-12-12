@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout 
+	title="Sản phẩm Yến Sào - Yến Sào Premium"
+	description="Danh sách sản phẩm yến sào cao cấp, nguyên chất 100%. Yến sào tinh chế, yến sào thô, yến sào chưng sẵn với giá tốt nhất."
+>
+	<Header />
+	<main class="min-h-screen py-8">
+		<div class="container mx-auto px-4">
+			<h1 class="text-4xl font-bold text-center mb-12 text-gray-800">
+				Sản phẩm Yến Sào
+			</h1>
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+				<div class="bg-white rounded-lg shadow-md overflow-hidden">
+					<div class="h-64 bg-amber-100"></div>
+					<div class="p-6">
+						<h2 class="text-2xl font-semibold mb-2">Yến Sào Tinh Chế</h2>
+						<p class="text-gray-600 mb-4">Yến sào đã được làm sạch hoàn toàn, sẵn sàng sử dụng. Sản phẩm cao cấp, nguyên chất 100%.</p>
+						<p class="text-3xl font-bold text-amber-600 mb-4">2.500.000đ / 100g</p>
+						<button class="w-full bg-amber-600 text-white py-3 rounded-lg font-semibold hover:bg-amber-700 transition">
+							Liên hệ đặt hàng
+						</button>
+					</div>
+				</div>
+				<div class="bg-white rounded-lg shadow-md overflow-hidden">
+					<div class="h-64 bg-amber-100"></div>
+					<div class="p-6">
+						<h2 class="text-2xl font-semibold mb-2">Yến Sào Thô</h2>
+						<p class="text-gray-600 mb-4">Yến sào nguyên tổ, chưa qua xử lý. Dành cho những người muốn tự làm sạch.</p>
+						<p class="text-3xl font-bold text-amber-600 mb-4">1.800.000đ / 100g</p>
+						<button class="w-full bg-amber-600 text-white py-3 rounded-lg font-semibold hover:bg-amber-700 transition">
+							Liên hệ đặt hàng
+						</button>
+					</div>
+				</div>
+				<div class="bg-white rounded-lg shadow-md overflow-hidden">
+					<div class="h-64 bg-amber-100"></div>
+					<div class="p-6">
+						<h2 class="text-2xl font-semibold mb-2">Yến Sào Chưng Sẵn</h2>
+						<p class="text-gray-600 mb-4">Yến sào đã chưng sẵn với đường phèn, tiện lợi sử dụng ngay.</p>
+						<p class="text-3xl font-bold text-amber-600 mb-4">3.200.000đ / 100g</p>
+						<button class="w-full bg-amber-600 text-white py-3 rounded-lg font-semibold hover:bg-amber-700 transition">
+							Liên hệ đặt hàng
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<Footer />
+</BaseLayout>
+

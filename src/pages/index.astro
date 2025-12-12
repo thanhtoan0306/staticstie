@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout 
+	title="Yến Sào Premium - Yến Sào Nguyên Chất Cao Cấp"
+	description="Chuyên cung cấp yến sào nguyên chất 100%, cao cấp với giá tốt nhất. Sản phẩm yến sào được chọn lọc kỹ lưỡng, đảm bảo chất lượng và an toàn."
+>
+	<Header />
+	<main>
+		<!-- Hero Section -->
+		<section class="bg-gradient-to-r from-amber-50 to-orange-50 py-20">
+			<div class="container mx-auto px-4 text-center">
+				<h1 class="text-5xl font-bold text-gray-800 mb-6">
+					Yến Sào Premium
+				</h1>
+				<p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+					Yến sào nguyên chất 100% - Tinh hoa từ thiên nhiên, sức khỏe cho gia đình bạn
+				</p>
+				<a href="/san-pham" class="inline-block bg-amber-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-amber-700 transition">
+					Xem sản phẩm
+				</a>
+			</div>
+		</section>
+
+		<!-- Features Section -->
+		<section class="py-16">
+			<div class="container mx-auto px-4">
+				<h2 class="text-3xl font-bold text-center mb-12 text-gray-800">
+					Tại sao chọn Yến Sào Premium?
+				</h2>
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+					<div class="text-center p-6 bg-white rounded-lg shadow-md">
+						<div class="text-4xl mb-4">✨</div>
+						<h3 class="text-xl font-semibold mb-2">Nguyên chất 100%</h3>
+						<p class="text-gray-600">Yến sào được chọn lọc kỹ lưỡng, không pha trộn, đảm bảo chất lượng cao nhất</p>
+					</div>
+					<div class="text-center p-6 bg-white rounded-lg shadow-md">
+						<div class="text-4xl mb-4">🏆</div>
+						<h3 class="text-xl font-semibold mb-2">Chứng nhận chất lượng</h3>
+						<p class="text-gray-600">Sản phẩm được kiểm định và chứng nhận bởi các cơ quan uy tín</p>
+					</div>
+					<div class="text-center p-6 bg-white rounded-lg shadow-md">
+						<div class="text-4xl mb-4">🚚</div>
+						<h3 class="text-xl font-semibold mb-2">Giao hàng nhanh</h3>
+						<p class="text-gray-600">Miễn phí vận chuyển toàn quốc, giao hàng trong 24h</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Products Preview -->
+		<section class="py-16 bg-gray-50">
+			<div class="container mx-auto px-4">
+				<h2 class="text-3xl font-bold text-center mb-12 text-gray-800">
+					Sản phẩm nổi bật
+				</h2>
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+					<div class="bg-white rounded-lg shadow-md overflow-hidden">
+						<div class="h-48 bg-amber-100"></div>
+						<div class="p-6">
+							<h3 class="text-xl font-semibold mb-2">Yến Sào Tinh Chế</h3>
+							<p class="text-gray-600 mb-4">Yến sào đã được làm sạch, sẵn sàng sử dụng</p>
+							<p class="text-2xl font-bold text-amber-600 mb-4">2.500.000đ</p>
+							<a href="/san-pham" class="block text-center bg-amber-600 text-white py-2 rounded hover:bg-amber-700 transition">
+								Xem chi tiết
+							</a>
+						</div>
+					</div>
+					<div class="bg-white rounded-lg shadow-md overflow-hidden">
+						<div class="h-48 bg-amber-100"></div>
+						<div class="p-6">
+							<h3 class="text-xl font-semibold mb-2">Yến Sào Thô</h3>
+							<p class="text-gray-600 mb-4">Yến sào nguyên tổ, chưa qua xử lý</p>
+							<p class="text-2xl font-bold text-amber-600 mb-4">1.800.000đ</p>
+							<a href="/san-pham" class="block text-center bg-amber-600 text-white py-2 rounded hover:bg-amber-700 transition">
+								Xem chi tiết
+							</a>
+						</div>
+					</div>
+					<div class="bg-white rounded-lg shadow-md overflow-hidden">
+						<div class="h-48 bg-amber-100"></div>
+						<div class="p-6">
+							<h3 class="text-xl font-semibold mb-2">Yến Sào Chưng Sẵn</h3>
+							<p class="text-gray-600 mb-4">Yến sào đã chưng sẵn, tiện lợi sử dụng</p>
+							<p class="text-2xl font-bold text-amber-600 mb-4">3.200.000đ</p>
+							<a href="/san-pham" class="block text-center bg-amber-600 text-white py-2 rounded hover:bg-amber-700 transition">
+								Xem chi tiết
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
+	<Footer />
+</BaseLayout>

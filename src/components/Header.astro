@@ -1,0 +1,66 @@
+---
+const currentPath = Astro.url.pathname;
+---
+
+<header class="bg-white shadow-md sticky top-0 z-50">
+	<nav class="container mx-auto px-4 py-4">
+		<div class="flex items-center justify-between">
+			<a href="/" class="text-2xl font-bold text-amber-600">
+				Yến Sào Premium
+			</a>
+			<ul class="hidden md:flex space-x-6">
+				<li>
+					<a href="/" class={`hover:text-amber-600 transition ${currentPath === '/' ? 'text-amber-600 font-semibold' : ''}`}>
+						Trang chủ
+					</a>
+				</li>
+				<li>
+					<a href="/san-pham" class={`hover:text-amber-600 transition ${currentPath.startsWith('/san-pham') ? 'text-amber-600 font-semibold' : ''}`}>
+						Sản phẩm
+					</a>
+				</li>
+				<li>
+					<a href="/blog" class={`hover:text-amber-600 transition ${currentPath.startsWith('/blog') ? 'text-amber-600 font-semibold' : ''}`}>
+						Blog
+					</a>
+				</li>
+				<li>
+					<a href="/gioi-thieu" class={`hover:text-amber-600 transition ${currentPath === '/gioi-thieu' ? 'text-amber-600 font-semibold' : ''}`}>
+						Giới thiệu
+					</a>
+				</li>
+				<li>
+					<a href="/lien-he" class={`hover:text-amber-600 transition ${currentPath === '/lien-he' ? 'text-amber-600 font-semibold' : ''}`}>
+						Liên hệ
+					</a>
+				</li>
+			</ul>
+			<button class="md:hidden" id="mobile-menu-btn">
+				<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+				</svg>
+			</button>
+		</div>
+		<div class="md:hidden hidden mt-4" id="mobile-menu">
+			<ul class="space-y-2">
+				<li><a href="/" class="block py-2 hover:text-amber-600">Trang chủ</a></li>
+				<li><a href="/san-pham" class="block py-2 hover:text-amber-600">Sản phẩm</a></li>
+				<li><a href="/blog" class="block py-2 hover:text-amber-600">Blog</a></li>
+				<li><a href="/gioi-thieu" class="block py-2 hover:text-amber-600">Giới thiệu</a></li>
+				<li><a href="/lien-he" class="block py-2 hover:text-amber-600">Liên hệ</a></li>
+			</ul>
+		</div>
+	</nav>
+</header>
+
+<script>
+	const menuBtn = document.getElementById('mobile-menu-btn');
+	const mobileMenu = document.getElementById('mobile-menu');
+	
+	if (menuBtn && mobileMenu) {
+		menuBtn.addEventListener('click', () => {
+			mobileMenu.classList.toggle('hidden');
+		});
+	}
+</script>
+

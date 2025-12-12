@@ -1,0 +1,157 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+
+export function getStaticPaths() {
+	// Return empty array since posts are loaded client-side from localStorage
+	return [];
+}
+---
+<｜tool▁calls▁begin｜><｜tool▁call▁begin｜>
+run_terminal_cmd
+
+<BaseLayout 
+	title="Sửa bài viết - Blog Yến Sào Premium"
+	description="Chỉnh sửa bài viết"
+>
+	<Header />
+	<main class="min-h-screen py-8">
+		<div class="container mx-auto px-4 max-w-4xl">
+			<h1 class="text-4xl font-bold mb-8 text-gray-800">Sửa bài viết</h1>
+			<div id="form-container">
+				<div class="text-center py-12">
+					<p class="text-gray-600">Đang tải...</p>
+				</div>
+			</div>
+		</div>
+	</main>
+	<Footer />
+	<script>
+		import { getPostById, updatePost } from '../../../lib/blog-client';
+		
+		const postId = window.location.pathname.split('/').pop();
+		const post = postId ? getPostById(postId) : null;
+		
+		const container = document.getElementById('form-container');
+		
+		if (!post || !container) {
+			container.innerHTML = `
+				<div class="text-center py-12">
+					<p class="text-gray-600 text-lg mb-4">Không tìm thấy bài viết</p>
+					<a href="/blog" class="text-amber-600 hover:underline">Quay lại danh sách</a>
+				</div>
+			`;
+		} else {
+			container.innerHTML = `
+				<form id="blog-form" class="bg-white rounded-lg shadow-md p-8">
+					<input type="hidden" id="post-id" value="${post.id}" />
+					<div class="mb-6">
+						<label class="block text-gray-700 font-semibold mb-2">Tiêu đề *</label>
+						<input 
+							type="text" 
+							id="title"
+							name="title"
+							value="${post.title.replace(/"/g, '&quot;')}"
+							required
+							class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+						/>
+					</div>
+					<div class="mb-6">
+						<label class="block text-gray-700 font-semibold mb-2">URL slug *</label>
+						<input 
+							type="text" 
+							id="slug"
+							name="slug"
+							value="${post.slug}"
+							required
+							pattern="[a-z0-9-]+"
+							class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+						/>
+					</div>
+					<div class="mb-6">
+						<label class="block text-gray-700 font-semibold mb-2">Tóm tắt *</label>
+						<textarea 
+							id="excerpt"
+							name="excerpt"
+							rows="3"
+							required
+							class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+						>${post.excerpt.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</textarea>
+					</div>
+					<div class="mb-6">
+						<label class="block text-gray-700 font-semibold mb-2">Nội dung *</label>
+						<textarea 
+							id="content"
+							name="content"
+							rows="10"
+							required
+							class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+						>${post.content.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</textarea>
+					</div>
+					<div class="mb-6">
+						<label class="block text-gray-700 font-semibold mb-2">Tác giả *</label>
+						<input 
+							type="text" 
+							id="author"
+							name="author"
+							value="${post.author.replace(/"/g, '&quot;')}"
+							required
+							class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+						/>
+					</div>
+					<div class="mb-6">
+						<label class="block text-gray-700 font-semibold mb-2">Tags (phân cách bằng dấu phẩy)</label>
+						<input 
+							type="text" 
+							id="tags"
+							name="tags"
+							value="${(post.tags || []).join(', ')}"
+							class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+						/>
+					</div>
+					<div class="flex gap-4">
+						<button 
+							type="submit"
+							class="bg-amber-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-amber-700 transition"
+						>
+							Cập nhật bài viết
+						</button>
+						<a 
+							href="/blog/${post.slug}"
+							class="bg-gray-300 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-400 transition"
+						>
+							Hủy
+						</a>
+					</div>
+				</form>
+			`;
+			
+			// Update page title
+			document.title = `Sửa bài viết: ${post.title} - Blog Yến Sào Premium`;
+			
+			// Form submit handler
+			const form = document.getElementById('blog-form');
+			form?.addEventListener('submit', (e) => {
+				e.preventDefault();
+				const formData = new FormData(form);
+				const tags = formData.get('tags')?.toString().split(',').map(t => t.trim()).filter(t => t) || [];
+				
+				const updatedPost = updatePost(postId, {
+					title: formData.get('title')?.toString() || '',
+					slug: formData.get('slug')?.toString() || '',
+					excerpt: formData.get('excerpt')?.toString() || '',
+					content: formData.get('content')?.toString() || '',
+					author: formData.get('author')?.toString() || '',
+					tags: tags,
+				});
+
+				if (updatedPost) {
+					window.location.href = `/blog/${updatedPost.slug}`;
+				} else {
+					alert('Có lỗi xảy ra khi cập nhật bài viết');
+				}
+			});
+		}
+	</script>
+</BaseLayout>

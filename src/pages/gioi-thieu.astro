@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout 
+	title="Giới thiệu - Yến Sào Premium"
+	description="Tìm hiểu về Yến Sào Premium - Thương hiệu yến sào uy tín, chất lượng cao với nhiều năm kinh nghiệm trong ngành."
+>
+	<Header />
+	<main class="min-h-screen py-8">
+		<div class="container mx-auto px-4 max-w-4xl">
+			<h1 class="text-4xl font-bold text-center mb-12 text-gray-800">
+				Giới thiệu về Yến Sào Premium
+			</h1>
+			<div class="prose prose-lg max-w-none">
+				<section class="mb-8">
+					<h2 class="text-2xl font-semibold mb-4 text-gray-800">Về chúng tôi</h2>
+					<p class="text-gray-600 mb-4">
+						Yến Sào Premium là thương hiệu chuyên cung cấp yến sào nguyên chất, cao cấp với nhiều năm kinh nghiệm trong ngành. 
+						Chúng tôi cam kết mang đến cho khách hàng những sản phẩm yến sào chất lượng cao nhất, được chọn lọc kỹ lưỡng từ các 
+						nhà yến uy tín tại Việt Nam.
+					</p>
+				</section>
+				<section class="mb-8">
+					<h2 class="text-2xl font-semibold mb-4 text-gray-800">Sứ mệnh</h2>
+					<p class="text-gray-600 mb-4">
+						Mang đến sức khỏe và sắc đẹp cho mọi gia đình Việt Nam thông qua các sản phẩm yến sào nguyên chất, 
+						an toàn và chất lượng cao.
+					</p>
+				</section>
+				<section class="mb-8">
+					<h2 class="text-2xl font-semibold mb-4 text-gray-800">Cam kết</h2>
+					<ul class="list-disc list-inside text-gray-600 space-y-2">
+						<li>100% yến sào nguyên chất, không pha trộn</li>
+						<li>Chứng nhận chất lượng rõ ràng</li>
+						<li>Giá cả hợp lý, cạnh tranh</li>
+						<li>Dịch vụ chăm sóc khách hàng tận tâm</li>
+						<li>Giao hàng nhanh chóng, an toàn</li>
+					</ul>
+				</section>
+			</div>
+		</div>
+	</main>
+	<Footer />
+</BaseLayout>
+

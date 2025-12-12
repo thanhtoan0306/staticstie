@@ -1,0 +1,133 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<BaseLayout 
+	title="Tạo bài viết mới - Blog Yến Sào Premium"
+	description="Tạo bài viết mới cho blog"
+>
+	<Header />
+	<main class="min-h-screen py-8">
+		<div class="container mx-auto px-4 max-w-4xl">
+			<h1 class="text-4xl font-bold mb-8 text-gray-800">Tạo bài viết mới</h1>
+			<form id="blog-form" class="bg-white rounded-lg shadow-md p-8">
+				<div class="mb-6">
+					<label class="block text-gray-700 font-semibold mb-2">Tiêu đề *</label>
+					<input 
+						type="text" 
+						id="title"
+						name="title"
+						required
+						class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+					/>
+				</div>
+				<div class="mb-6">
+					<label class="block text-gray-700 font-semibold mb-2">URL slug *</label>
+					<input 
+						type="text" 
+						id="slug"
+						name="slug"
+						required
+						pattern="[a-z0-9-]+"
+						class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+					/>
+					<p class="text-sm text-gray-500 mt-1">Chỉ sử dụng chữ thường, số và dấu gạch ngang</p>
+				</div>
+				<div class="mb-6">
+					<label class="block text-gray-700 font-semibold mb-2">Tóm tắt *</label>
+					<textarea 
+						id="excerpt"
+						name="excerpt"
+						rows="3"
+						required
+						class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+					></textarea>
+				</div>
+				<div class="mb-6">
+					<label class="block text-gray-700 font-semibold mb-2">Nội dung *</label>
+					<textarea 
+						id="content"
+						name="content"
+						rows="10"
+						required
+						class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+					></textarea>
+				</div>
+				<div class="mb-6">
+					<label class="block text-gray-700 font-semibold mb-2">Tác giả *</label>
+					<input 
+						type="text" 
+						id="author"
+						name="author"
+						required
+						class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+					/>
+				</div>
+				<div class="mb-6">
+					<label class="block text-gray-700 font-semibold mb-2">Tags (phân cách bằng dấu phẩy)</label>
+					<input 
+						type="text" 
+						id="tags"
+						name="tags"
+						class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+					/>
+				</div>
+				<div class="flex gap-4">
+					<button 
+						type="submit"
+						class="bg-amber-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-amber-700 transition"
+					>
+						Tạo bài viết
+					</button>
+					<a 
+						href="/blog"
+						class="bg-gray-300 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-400 transition"
+					>
+						Hủy
+					</a>
+				</div>
+			</form>
+		</div>
+	</main>
+	<Footer />
+	<script>
+		import { createPost } from '../../lib/blog-client';
+		
+		const form = document.getElementById('blog-form');
+		const titleInput = document.getElementById('title');
+		const slugInput = document.getElementById('slug');
+
+		// Auto-generate slug from title
+		titleInput?.addEventListener('input', () => {
+			const slug = titleInput.value
+				.toLowerCase()
+				.normalize('NFD')
+				.replace(/[\u0300-\u036f]/g, '')
+				.replace(/[^a-z0-9]+/g, '-')
+				.replace(/^-+|-+$/g, '');
+			if (slugInput) {
+				slugInput.value = slug;
+			}
+		});
+
+		form?.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const formData = new FormData(form);
+			const tags = formData.get('tags')?.toString().split(',').map(t => t.trim()).filter(t => t) || [];
+			
+			const post = createPost({
+				title: formData.get('title')?.toString() || '',
+				slug: formData.get('slug')?.toString() || '',
+				excerpt: formData.get('excerpt')?.toString() || '',
+				content: formData.get('content')?.toString() || '',
+				author: formData.get('author')?.toString() || '',
+				tags: tags,
+			});
+
+			window.location.href = `/blog/${post.slug}`;
+		});
+	</script>
+</BaseLayout>
+

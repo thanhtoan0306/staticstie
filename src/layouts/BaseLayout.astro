@@ -1,0 +1,72 @@
+---
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+	description?: string;
+	image?: string;
+	keywords?: string;
+}
+
+const {
+	title,
+	description = 'Yến sào cao cấp, nguyên chất 100% - Sản phẩm yến sào chất lượng cao với giá tốt nhất thị trường',
+	image = '/og-image.jpg',
+	keywords = 'yến sào, yến sào nguyên chất, yến sào cao cấp, mua yến sào, yến sào giá tốt',
+} = Astro.props;
+
+const siteURL = Astro.site || 'https://yensaopremium.com';
+const canonicalURL = new URL(Astro.url.pathname, siteURL);
+---
+
+<!doctype html>
+<html lang="vi">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		
+		<!-- Primary Meta Tags -->
+		<title>{title}</title>
+		<meta name="title" content={title} />
+		<meta name="description" content={description} />
+		<meta name="keywords" content={keywords} />
+		<meta name="author" content="Yến Sào Premium" />
+		<meta name="robots" content="index, follow" />
+		<meta name="language" content="Vietnamese" />
+		
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={new URL(image, siteURL)} />
+		<meta property="og:locale" content="vi_VN" />
+		
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content={canonicalURL} />
+		<meta property="twitter:title" content={title} />
+		<meta property="twitter:description" content={description} />
+		<meta property="twitter:image" content={new URL(image, siteURL)} />
+		
+		<!-- Canonical URL -->
+		<link rel="canonical" href={canonicalURL} />
+		
+		<!-- Structured Data -->
+		<script type="application/ld+json" set:html={JSON.stringify({
+			"@context": "https://schema.org",
+			"@type": "Organization",
+			"name": "Yến Sào Premium",
+			"url": siteURL,
+			"logo": new URL("/logo.png", siteURL),
+			"description": description,
+			"sameAs": []
+		})} />
+	</head>
+	<body class="min-h-screen bg-gray-50">
+		<slot />
+	</body>
+</html>
+
